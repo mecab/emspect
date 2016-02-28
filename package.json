@@ -1,0 +1,24 @@
+{
+  "name": "emspect",
+  "version": "1.0.0",
+  "description": "EMoji inSPECTor",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "keywords": [
+    "emoji"
+  ],
+  "author": "mecab",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.20.0",
+    "commander": "^2.9.0",
+    "linq": "^3.0.5",
+    "request": "^2.69.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
+}
