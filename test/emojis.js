@@ -41,19 +41,19 @@ describe("Emojis.searchFunctionForQuery", () => {
                      emojis.searchByName);
     });
 
-    it("returns searchByAnnotation() for `face`", () => {
+    it("returns searchByAnnotations() for `face`", () => {
         assert.equal(emojis.searchFunctionForQuery("face"),
-                     emojis.searchByAnnotation);
+                     emojis.searchByAnnotations);
     });
 
-    it("returns searchByAnnotation() for `grinning face`", () => {
+    it("returns searchByAnnotations() for `grinning face`", () => {
         assert.equal(emojis.searchFunctionForQuery("face"),
-                     emojis.searchByAnnotation);
+                     emojis.searchByAnnotations);
     });
 
-    it("returns searchByAnnotation() for `0`", () => {
+    it("returns searchByAnnotations() for `0`", () => {
         assert.equal(emojis.searchFunctionForQuery("0"),
-                     emojis.searchByAnnotation);
+                     emojis.searchByAnnotations);
     });
 
     it("returns searchByChars() for `0️⃣", () => {
@@ -122,31 +122,31 @@ describe("Emojis.searchByName", () => {
     });
 });
 
-describe("Emojis.searchByAnnotation", () => {
+describe("Emojis.searchByAnnotations", () => {
     it("returns 0️⃣  for `0`", () => {
-        assert.equal(emojis.searchByAnnotation("0").length, 1);
-        assert.equal(emojis.searchByAnnotation("0")[0].chars, "0️⃣");
+        assert.equal(emojis.searchByAnnotations("0").length, 1);
+        assert.equal(emojis.searchByAnnotations("0")[0].chars, "0️⃣");
     });
 
     it("returns 0️⃣ , 1️⃣  for `keycap`", () => {
-        assert.equal(emojis.searchByAnnotation("keycap").length, 2);
-        assert.equal(emojis.searchByAnnotation("keycap")[0].chars, "0️⃣");
-        assert.equal(emojis.searchByAnnotation("keycap")[1].chars, "1️⃣");
+        assert.equal(emojis.searchByAnnotations("keycap").length, 2);
+        assert.equal(emojis.searchByAnnotations("keycap")[0].chars, "0️⃣");
+        assert.equal(emojis.searchByAnnotations("keycap")[1].chars, "1️⃣");
     });
 
     it("returns 0️⃣ , 1️⃣  for `Keycap` (case-independent)", () => {
-        assert.equal(emojis.searchByAnnotation("Keycap").length, 2);
-        assert.equal(emojis.searchByAnnotation("Keycap")[0].chars, "0️⃣");
-        assert.equal(emojis.searchByAnnotation("Keycap")[1].chars, "1️⃣");
+        assert.equal(emojis.searchByAnnotations("Keycap").length, 2);
+        assert.equal(emojis.searchByAnnotations("Keycap")[0].chars, "0️⃣");
+        assert.equal(emojis.searchByAnnotations("Keycap")[1].chars, "1️⃣");
     });
 
     it("returns 0️⃣  for `keycap zero` (and-search)", () => {
-        assert.equal(emojis.searchByAnnotation("keycap zero").length, 1);
-        assert.equal(emojis.searchByAnnotation("keycap zero")[0].chars, "0️⃣");
+        assert.equal(emojis.searchByAnnotations("keycap", "zero").length, 1);
+        assert.equal(emojis.searchByAnnotations("keycap", "zero")[0].chars, "0️⃣");
     });
 
     it("returns []  for `not exist`", () => {
-        assert.equal(emojis.searchByAnnotation("not exist").length, 0);
+        assert.equal(emojis.searchByAnnotations("not exist").length, 0);
     });
 });
 
@@ -172,22 +172,22 @@ describe("EmojiSearchResult", () => {
         assert.equal(e.formatAll(), "U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero");
     });
 
-    it("format('-a') is same as formatAll()", () => {
-        assert.equal(e.format('-a'), e.formatAll());
+    it("format('all') is same as formatAll()", () => {
+        assert.equal(e.format('all'), e.formatAll());
     });
 
-    it("format('$c\t$C\t$n\t$g\t$d\t$a') is same as formatAll()", () => {
-        assert.equal(e.format('$c\t$C\t$n\t$g\t$d\t$a'), e.formatAll());
+    it("format('%c\t%C\t%n\t%g\t%d\t%a') is same as formatAll()", () => {
+        assert.equal(e.format('%c\t%C\t%n\t%g\t%d\t%a'), e.formatAll());
     });
 
-    it("format() works for duplicated format-descriptors; format('$c $c')", () => {
-        assert.equal(e.format('$c $c'),
+    it("format() works for duplicated format-descriptors; format('%c %c')", () => {
+        assert.equal(e.format('%c %c'),
                      "U+0030 U+20E3 U+0030 U+20E3");
     });
 
-    it("format() works for escaped doller; format('$c\$$c')", () => {
-        assert.equal(e.format('$c\$$c'),
-                     "U+0030 U+20E3$U+0030 U+20E3");
+    it("format() works for escaped doller; format('%c\%%c')", () => {
+        assert.equal(e.format('%c\%%c'),
+                     "U+0030 U+20E3%U+0030 U+20E3");
     });
 
     it("formatJson returns correct JSON", () => {

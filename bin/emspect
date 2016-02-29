@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+//jshint esnext: true, node: true
+
+"use strict"
+
+var path = require('path');
+var fs = require('fs');
+var program = require('commander');
+var Enumerable = require('linq');
+
+var emspect = require(path.join(__dirname, '../', 'index'));
+var Emojis = emspect.Emojis;
+
+var query;
+
+function list(val) {
+    return val.split(' ');
+}
+
+program
+    .version('1.0.0')
+    .arguments('[query]')
+    .action((query_) => {
+        query = query_;
+    })
+    .option('-c, --code <code>', 'search by code (ex. U+0030 U+20E3)', String)
+    .option('-C, --char <char>', 'search by character (ex. 0️⃣)', String)
+    .option('-n, --name <name>', 'search by name (ex. Keycap DIGIT ZERO)', String)
+    .option('-a, --annotations <annotations>', 'search by annotations (ex. keycap)', list)
+    .option('-f, --format <format>', 'format', String)
+    .parse(process.argv);
+
+var results = [];
+fs.readFile(path.join(__dirname, '../', 'emojiData.json'), 'utf8', (err, res) => {
+    if (err) {
+        console.error('Could not read data.');
+        console.error(err.message);
+        process.exit(-1);
+    }
+
+    var emojis = new Emojis(JSON.parse(res));
+    var result;
+
+    if (query) {
+        if (program.code || program.char || typeof(program.name) === "string" || program.annotations) {
+            throw new Error("query cannot specified if -c, -C, -n or -a is given");
+        }
+
+        result = emojis.search(query);
+    }
+    else {
+        if (program.code) {
+            results.push(emojis.searchByCode(program.code));
+        }
+
+        if (program.char) {
+            results.push(emojis.searchByChars(program.char));
+        }
+
+        // Due to technical reason, program object has `name`.
+        // Checking type is needed to test whether the `--name` is given by user or not
+        if (typeof(program.name) === "string") {
+            results.push(emojis.searchByName(program.name));
+        }
+
+        if (program.annotations) {
+            results.push(emojis.searchByAnnotations.apply(emojis, program.annotations));
+        }
+
+        result = Enumerable.from(results)
+            .intercect("$.code")
+            .toArray();
+    }
+
+    if (program.format === "json") {
+        var json = JSON.stringify(
+            Enumerable.from(result)
+                .select((e) => { return e.toData(); })
+                .toArray()
+        );
+        console.log(json);
+    }
+    else {
+        Enumerable.from(result)
+            .select((e) => { return e.format(program.format); })
+            .forEach((e) => {
+                console.log(e);
+            });
+    }
+});
+
+
