@@ -28,10 +28,15 @@ function update() {
                                 })
                                 .toArray();
 
+                        var nameSynonym = $el.find('.name').eq(0).text().split("≊ ");
+                        var name = nameSynonym[0];
+                        var synonym = nameSynonym[1] || null;
+
                         return {
                             code: $el.find('.code').text(),
                             chars: $el.find('.chars').text(),
-                            name: $el.find('.name').eq(0).text(),
+                            name: name,
+                            synonym: synonym,
                             age: $el.find('.age').text(),
                             default: $el.find('.default').text(),
                             annotations: annotations

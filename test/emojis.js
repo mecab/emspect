@@ -22,6 +22,15 @@ var emojis = new Emojis(
             age: "2000",
             default: "text*",
             annotations: ["1", "keycap", "symbol", "word", "one"]
+        },
+        {
+            code: "U+1F170",
+            chars: "🅰️",
+            name: "NEGATIVE SQUARED LATIN CAPITAL LETTER A",
+            synonim: "a button",
+            age: "2010ʲ",
+            default: "text*",
+            annotations: ["a","blood","symbol","word"]
         }
     ]);
 
@@ -118,6 +127,10 @@ describe("Emojis.searchByName", () => {
     });
 
     it("returns []  for `KEYCAP ZERO` (match exactly)", () => {
+        assert.equal(emojis.searchByName("KEYCAP ZERO").length, 0);
+    });
+
+    it("returns 🅰️  for `A BUTTON` (match for synonym)", () => {
         assert.equal(emojis.searchByName("KEYCAP ZERO").length, 0);
     });
 });
