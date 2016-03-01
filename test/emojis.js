@@ -46,7 +46,7 @@ describe("Emojis.searchFunctionForQuery", () => {
                      emojis.searchByAnnotations);
     });
 
-    it("returns searchByAnnotations() for `grinning face`", () => {
+    it("returns searchByAnnotations() for `grinning, face`", () => {
         assert.equal(emojis.searchFunctionForQuery("face"),
                      emojis.searchByAnnotations);
     });
