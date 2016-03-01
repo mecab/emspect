@@ -50,6 +50,11 @@ describe("Emojis.searchFunctionForQuery", () => {
                      emojis.searchByName);
     });
 
+    it("returns searchByName() for `TYPE-1`", () => {
+        assert.equal(emojis.searchFunctionForQuery("TYPE-1"),
+                     emojis.searchByName);
+    });
+
     it("returns searchByAnnotations() for `face`", () => {
         assert.equal(emojis.searchFunctionForQuery("face"),
                      emojis.searchByAnnotations);
