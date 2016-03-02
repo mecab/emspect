@@ -2,15 +2,28 @@
   "name": "emspect",
   "version": "1.0.0",
   "description": "EMoji inSPECTor",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha --recursive"
-  },
   "keywords": [
     "emoji"
   ],
-  "author": "mecab",
+  "author": {
+    "name": "mecab",
+    "url": "http://misosi.ru/"
+  },
+  "homepage": "https://github.com/mecab/emspect",
+  "bugs": {
+    "url" : "http://github.com/mecab/emspect/issues"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/mecab/emspect.git"
+  },
   "license": "MIT",
+  "engines" : { "node" : ">=4.0.0" },
+  "main": "index.js",
+  "bin": "bin/emspect",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
   "dependencies": {
     "cheerio": "^0.20.0",
     "commander": "^2.9.0",
