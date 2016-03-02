@@ -13,7 +13,8 @@ var emojis = new Emojis(
             name: "Keycap DIGIT ZERO",
             age: "2000",
             default: "text*",
-            annotations: ["0", "keycap", "symbol", "word", "zero"]
+            annotations: ["0", "keycap", "symbol", "word", "zero"],
+            aliases: ["zero"]
         },
         {
             code: "U+0031 U+20E3",
@@ -21,7 +22,8 @@ var emojis = new Emojis(
             name: "Keycap DIGIT ONE",
             age: "2000",
             default: "text*",
-            annotations: ["1", "keycap", "symbol", "word", "one"]
+            annotations: ["1", "keycap", "symbol", "word", "one"],
+            aliases: ["one"]
         },
         {
             code: "U+1F170",
@@ -30,7 +32,8 @@ var emojis = new Emojis(
             synonim: "a button",
             age: "2010ʲ",
             default: "text*",
-            annotations: ["a","blood","symbol","word"]
+            annotations: ["a","blood","symbol","word"],
+            aliases: ["a"]
         }
     ]);
 
@@ -73,6 +76,16 @@ describe("Emojis.searchFunctionForQuery", () => {
     it("returns searchByChars() for `0️⃣", () => {
         assert.equal(emojis.searchFunctionForQuery("0️⃣"),
                      emojis.searchByChars);
+    });
+
+    it("returns searchByShortcode() for `:one:`", () => {
+        assert.equal(emojis.searchFunctionForQuery(':one:'),
+                     emojis.searchByShortcode);
+    });
+
+    it("returns searchByShortcodeStartsWith() for `:one`", () => {
+        assert.equal(emojis.searchFunctionForQuery(':one'),
+                     emojis.searchByShortcodeStartsWith);
     });
 });
 
@@ -168,6 +181,43 @@ describe("Emojis.searchByAnnotations", () => {
     });
 });
 
+describe("Emojis.searchByShortcode", () => {
+    it("returns 0️⃣  for `zero`", () => {
+        assert.equal(emojis.searchByShortcode("zero").length, 1);
+        assert.equal(emojis.searchByShortcode("zero")[0].chars, "0️⃣");
+    });
+
+    it("returns 0️⃣  for `Zero` (case-insensitive)", () => {
+        assert.equal(emojis.searchByShortcode("Zero").length, 1);
+        assert.equal(emojis.searchByShortcode("Zero")[0].chars, "0️⃣");
+    });
+
+    it("returns [] for `ze` (match exactly)", () => {
+        assert.equal(emojis.searchByShortcode("ze").length, 0);
+    });
+});
+
+describe("Emojis.searchByShortcodeStartsWith", () => {
+    it("returns 0️⃣  for `zero`", () => {
+        assert.equal(emojis.searchByShortcodeStartsWith("zero").length, 1);
+        assert.equal(emojis.searchByShortcodeStartsWith("zero")[0].chars, "0️⃣");
+    });
+
+    it("returns 0️⃣  for `Zero` (case-insensitive)", () => {
+        assert.equal(emojis.searchByShortcodeStartsWith("Zero").length, 1);
+        assert.equal(emojis.searchByShortcodeStartsWith("Zero")[0].chars, "0️⃣");
+    });
+
+    it("returns [] for `ze` (match by startsWith)", () => {
+        assert.equal(emojis.searchByShortcodeStartsWith("ze").length, 1);
+        assert.equal(emojis.searchByShortcodeStartsWith("ze")[0].chars, "0️⃣");
+    });
+
+    it("returns [] for `ro` (match by startsWith)", () => {
+        assert.equal(emojis.searchByShortcodeStartsWith("ro").length, 0);
+    });
+});
+
 describe("EmojiSearchResult", () => {
     var e = new EmojiSearchResult({
         code: "U+0030 U+20E3",
@@ -175,27 +225,31 @@ describe("EmojiSearchResult", () => {
         name: "Keycap DIGIT ZERO",
         age: "2000",
         default: "text*",
-        annotations: ["0", "keycap", "symbol", "word", "zero"]
+        annotations: ["0", "keycap", "symbol", "word", "zero"],
+        // ⚠️ Friendly note: "null" is not actual data for this emoji.
+        // Just for test of the aliases where length > 1. 😛
+        aliases: [ "zero", "null" ]
     });
 
-    it("formatSimple() returns `0️⃣ Keycap DIGIT ZERO (U+0030 U+20E3) - 0, keycap, symbol, word, zero`", () => {
-        assert.equal(e.formatSimple(), "0️⃣ Keycap DIGIT ZERO (U+0030 U+20E3) - 0, keycap, symbol, word, zero");
+    it("formatSimple() returns `0️⃣ Keycap DIGIT ZERO (U+0030 U+20E3) - 0, keycap, symbol, word, zero :zero:, :null:`", () => {
+        assert.equal(e.formatSimple(), "0️⃣ Keycap DIGIT ZERO (U+0030 U+20E3) - 0, keycap, symbol, word, zero :zero:, :null:");
     });
     
     it("format() is same as formatSimple()", () => {
         assert.equal(e.format(), e.formatSimple());
     });
 
-    it("formatAll() returns `U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero`", () => {
-        assert.equal(e.formatAll(), "U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero");
+    it("formatAll() returns `U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\t:zero:, :null:`", () => {
+        assert.equal(e.formatAll(), "U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\t:zero:, :null:");
     });
 
     it("format('all') is same as formatAll()", () => {
         assert.equal(e.format('all'), e.formatAll());
     });
 
-    it("format('%c\t%C\t%n\t%g\t%d\t%a') is same as formatAll()", () => {
-        assert.equal(e.format('%c\t%C\t%n\t%g\t%d\t%a'), e.formatAll());
+    it("format('%c\t%C\t%n\t%y\t%d\t%a\t%g\t%G') returns `U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\tzero, null\t:zero:, :null:`", () => {
+        assert.equal(e.format('%c\t%C\t%n\t%y\t%d\t%a\t%g\t%G'),
+                     "U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\tzero, null\t:zero:, :null:");
     });
 
     it("format() works for duplicated format-descriptors; format('%c %c')", () => {
@@ -215,7 +269,8 @@ describe("EmojiSearchResult", () => {
             name: "Keycap DIGIT ZERO",
             age: "2000",
             default: "text*",
-            annotations: ["0", "keycap", "symbol", "word", "zero"]
+            annotations: ["0", "keycap", "symbol", "word", "zero"],
+            aliases: ["zero", "null"]
         });
     })
 });
