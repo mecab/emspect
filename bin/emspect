@@ -7,6 +7,7 @@ var path = require('path');
 var fs = require('fs');
 var program = require('commander');
 var Enumerable = require('linq');
+var msg = require('emoji-logger');
 
 var emspect = require(path.join(__dirname, '../', 'index'));
 var Emojis = emspect.Emojis;
@@ -41,8 +42,8 @@ program
 
 fs.readFile(path.join(__dirname, '../', 'emojiData.json'), 'utf8', (err, res) => {
     if (err) {
-        console.error('Could not read data.');
-        console.error(err.message);
+        msg('Could not read data.', 'error');
+        msg(err.message, 'error');
         process.exit(-1);
     }
 
@@ -51,14 +52,14 @@ fs.readFile(path.join(__dirname, '../', 'emojiData.json'), 'utf8', (err, res) =>
 
     if (!query ||
         !(program.code || program.char || program.name || program.annotations || program.gfm || program.gfmStartswith)) {
-        console.error("Specifying `query` or one of -c, -C, -n, -a, -g or -G is required");
+        msg("Specifying `query` or one of -c, -C, -n, -a, -g or -G is required", 'error');
         program.outputHelp();
         process.exit(-1);
     }
 
     if (query) {
         if (program.code || program.char || program.name || program.annotations || program.gfm || program.gfmStartswith) {
-            console.error("`query` cannot specified if -c, -C, -n, -a, -g or -G is given");
+            msg("`query` cannot specified if -c, -C, -n, -a, -g or -G is given", 'error');
             program.outputHelp();
             process.exit(-1);
         }
