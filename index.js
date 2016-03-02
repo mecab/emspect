@@ -3,9 +3,11 @@
 "use strict";
 
 var fs = require('fs');
+var path = require('path');
 var request = require('request');
 var $ = require('cheerio');
 var Enumerable = require('linq');
+var msg = require('emoji-logger');
 
 function _joinEmojitoGemoji(emojis, gemojis) {
     var joined = Enumerable.from(emojis)
@@ -24,7 +26,10 @@ function _joinEmojitoGemoji(emojis, gemojis) {
 }
 
 function update() {
+    msg("We will update the database. This might take a while...");
+
     var requestFullEmojiListPromise = new Promise((resolve, reject) => {
+        msg("Retrieving http://unicode.org/emoji/charts/full-emoji-list.html ...");
         request("http://unicode.org/emoji/charts/full-emoji-list.html", (err, res, body) => {
             if (err) {
                 reject(err);
@@ -35,11 +40,13 @@ function update() {
                 return;
             }
 
+            msg("Compleated downloading full-emoji-list.html.", 'success');
             resolve(body);
         });
     });
 
     var requestGemojiJsonPromise = new Promise((resolve, reject) => {
+        msg("Retrieving https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json ...");
         request("https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json", (err, res, body) => {
             if (err) {
                 reject(err);
@@ -50,7 +57,12 @@ function update() {
                 return;
             }
 
-            resolve(JSON.parse(body));
+            msg("Compleated downloading emoji.json", 'success');
+
+            var emojis = JSON.parse(body);
+
+            msg(`Parsed emoji.json. ${emojis.length} emoji found.`);
+            resolve(emojis);
         });
     });
 
@@ -84,6 +96,7 @@ function update() {
                 })
                 .toArray();
 
+        msg(`Parsed full-emoji-list.html. ${emojis.length} emoji found`);
         return emojis;
     }
 
@@ -96,11 +109,21 @@ function update() {
             var emojis = parseFullEmojiBody(full);
             var data = _joinEmojitoGemoji(emojis, gemojiData);
 
-            fs.writeFile('emojiData.json', JSON.stringify(data), 'utf-8', (err, res) => {
-                if (err) Promise.reject(err);
+            msg("Writing emojiData.json...");
+
+            fs.writeFile(path.join(__dirname, 'emojiData.json'), JSON.stringify(data), 'utf-8', (err, res) => {
+                if (err) return Promise.reject(err);
                 return Promise.resolve(data);
             });
-        });
+        })
+        .then(
+            () => {
+                msg("Done!", "success");
+            },
+            (err) => {
+                msg("Failed...", "error");
+                console.log(err);
+            });
 }
 
 module.exports = {
