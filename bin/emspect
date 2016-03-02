@@ -49,9 +49,18 @@ fs.readFile(path.join(__dirname, '../', 'emojiData.json'), 'utf8', (err, res) =>
     var emojis = new Emojis(JSON.parse(res));
     var results;
 
+    if (!query ||
+        !(program.code || program.char || program.name || program.annotations || program.gfm || program.gfmStartswith)) {
+        console.error("Specifying `query` or one of -c, -C, -n, -a, -g or -G is required");
+        program.outputHelp();
+        process.exit(-1);
+    }
+
     if (query) {
         if (program.code || program.char || program.name || program.annotations || program.gfm || program.gfmStartswith) {
-            throw new Error("query cannot specified if -c, -C, -n, -a, -g or -G is given");
+            console.error("`query` cannot specified if -c, -C, -n, -a, -g or -G is given");
+            program.outputHelp();
+            process.exit(-1);
         }
 
         results = emojis.search(query);
