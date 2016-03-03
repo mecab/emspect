@@ -3,40 +3,51 @@
 var path = require('path');
 var fs = require('fs');
 var assert = require('chai').assert
+var Enumerable = require('linq');
 var Emojis = require('../index.js').Emojis
 var EmojiSearchResult = require('../index.js').EmojiSearchResult
 
-var emojis = new Emojis(
-    [
-        {
-            code: "U+0030 U+20E3",
-            chars: "0️⃣",
-            name: "Keycap DIGIT ZERO",
-            age: "2000",
-            default: "text*",
-            annotations: ["0", "keycap", "symbol", "word", "zero"],
-            aliases: ["zero"]
-        },
-        {
-            code: "U+0031 U+20E3",
-            chars:"1️⃣",
-            name: "Keycap DIGIT ONE",
-            age: "2000",
-            default: "text*",
-            annotations: ["1", "keycap", "symbol", "word", "one"],
-            aliases: ["one"]
-        },
-        {
-            code: "U+1F170",
-            chars: "🅰️",
-            name: "NEGATIVE SQUARED LATIN CAPITAL LETTER A",
-            synonim: "a button",
-            age: "2010ʲ",
-            default: "text*",
-            annotations: ["a","blood","symbol","word"],
-            aliases: ["a"]
-        }
-    ]);
+var testData = [
+    {
+        code: "U+0030 U+20E3",
+        chars: "0️⃣",
+        name: "Keycap DIGIT ZERO",
+        age: "2000",
+        default: "text*",
+        annotations: ["0", "keycap", "symbol", "word", "zero"],
+        aliases: ["zero"]
+    },
+    {
+        code: "U+0031 U+20E3",
+        chars:"1️⃣",
+        name: "Keycap DIGIT ONE",
+        age: "2000",
+        default: "text*",
+        annotations: ["1", "keycap", "symbol", "word", "one"],
+        aliases: ["one"]
+    },
+    {
+        code: "U+1F170",
+        chars: "🅰️",
+        name: "NEGATIVE SQUARED LATIN CAPITAL LETTER A",
+        synonim: "a button",
+        age: "2010ʲ",
+        default: "text*",
+        annotations: ["a","blood","symbol","word"],
+        aliases: ["a"]
+    }
+]
+
+var emojis = new Emojis(testData);
+
+describe("Emojis.all", () => {
+    it("returns all Emojis", () => {
+        assert.deepEqual(Enumerable.from(emojis.all())
+                         .select('$.toData()')
+                         .toArray(),
+                         testData);
+    })
+});
 
 describe("Emojis.searchFunctionForQuery", () => {
     it("returns searchByCode() for `U+1F600`", () => {
