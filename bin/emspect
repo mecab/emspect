@@ -42,17 +42,50 @@ program
     .option('--update', '⚠️ update emoji database (requires internet connection) ⚠️')
     .parse(process.argv);
 
+// COMMANDER HACK
+// --------------
+// Due to a conflict with commander's built-in property, the query is not parsed
+// if `query === "name"`. In this case, somehow `program.name` is `[ [] ]`,
+// so we overwrite the property and the variable with checking that 'name' in
+// argv, just in case.
+
+// Note `rawArgs[0]` is Node path. `rawArgs[1]` is the path of this script.
+if (program.name[0] && program.name[0].length === 0 && program.rawArgs.indexOf('name') > 1) {
+    query = 'name';
+    program.name = []
+}
+
 function isAnyNamedQuery() {
     return program.code + program.char + program.name + program.annotations + program.gfm + program.gfmStartswith;
 }
 
-if (program.update) {
-    emspect.update()
-        .catch(() => {
+function print(results) {
+    if (program.format === "json") {
+        var json = JSON.stringify(
+            Enumerable.from(results)
+                .select((e) => { return e.toData(); })
+                .toArray()
+        );
+        console.log(json);
+    }
+    else {
+        Enumerable.from(results)
+            .select((e) => { return e.format(program.format); })
+            .forEach((e) => {
+                console.log(e);
+            });
+    }
+}
+
+(function () {
+    if (program.update) {
+        emspect.update()
+            .catch(() => {
                 process.exit(-1);
             });
-}
-else {
+        return;
+    }
+
     try {
         var emojis = Emojis.createFromDefaultDataSync();
     }
@@ -64,21 +97,29 @@ else {
 
     var results;
 
-    if (query) {
-        if (isAnyNamedQuery()) {
-            msg("`query` cannot specified if -c, -C, -n, -a, -g or -G is given", 'error');
-            program.outputHelp();
-            process.exit(-1);
-        }
+    if (query && isAnyNamedQuery()) {
+        msg("`query` cannot specified if -c, -C, -n, -a, -g or -G is given", 'error');
+        program.outputHelp();
+        process.exit(-1);
+    }
+    else if (!query && !isAnyNamedQuery()) {
+        // No query
+        // ----------------------------
+        // Return all emojis.
+
+        results = emojis.all();
+    }
+    else if (query) {
+        // Lazy query
+        // ----------
 
         results = emojis.search(query);
     }
-    else {
-        if (!isAnyNamedQuery()) {
-            msg("Specifying `query` or one of -c, -C, -n, -a, -g or -G is required", 'error');
-            program.outputHelp();
-            process.exit(-1);
-        }
+    else { // => !query && isAnyNamedQuery()
+        // Context specified queries
+        // -------------------------
+        // Conduct and-search if multiple query is given.
+
         program.code.forEach((arg) => {
             var r = emojis.searchByCode(arg);
             results = !results ? Enumerable.from(r) :
@@ -115,23 +156,8 @@ else {
             results = !results ? Enumerable.from(r) :
                 results.intersect(r, "$.chars");
         });
-        ;
         results = results.toArray();
     }
 
-    if (program.format === "json") {
-        var json = JSON.stringify(
-            Enumerable.from(results)
-                .select((e) => { return e.toData(); })
-                .toArray()
-        );
-        console.log(json);
-    }
-    else {
-        Enumerable.from(results)
-            .select((e) => { return e.format(program.format); })
-            .forEach((e) => {
-                console.log(e);
-            });
-    }
-}
+    print(results);
+})();
