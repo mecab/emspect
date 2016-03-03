@@ -48,91 +48,90 @@ function isAnyNamedQuery() {
 
 if (program.update) {
     emspect.update()
-        .catch(
-            () => {
+        .catch(() => {
                 process.exit(-1);
             });
 }
 else {
-    fs.readFile(path.join(__dirname, '../', 'emojiData.json'), 'utf8', (err, res) => {
-        if (err) {
-            msg('Could not read data.', 'error');
-            msg(err.message, 'error');
+    try {
+        var emojis = Emojis.createFromDefaultDataSync();
+    }
+    catch (ex){
+        msg('Could not read data.', 'error');
+        msg(ex.message, 'error');
+        process.exit(-1);
+    }
+
+    var results;
+
+    if (query) {
+        if (isAnyNamedQuery()) {
+            msg("`query` cannot specified if -c, -C, -n, -a, -g or -G is given", 'error');
+            program.outputHelp();
             process.exit(-1);
         }
 
-        var emojis = new Emojis(JSON.parse(res));
-        var results;
-
-        if (query) {
-            if (isAnyNamedQuery()) {
-                msg("`query` cannot specified if -c, -C, -n, -a, -g or -G is given", 'error');
-                program.outputHelp();
-                process.exit(-1);
-            }
-
-            results = emojis.search(query);
+        results = emojis.search(query);
+    }
+    else {
+        if (!isAnyNamedQuery()) {
+            msg("Specifying `query` or one of -c, -C, -n, -a, -g or -G is required", 'error');
+            program.outputHelp();
+            process.exit(-1);
         }
-        else {
-            if (!isAnyNamedQuery()) {
-                msg("Specifying `query` or one of -c, -C, -n, -a, -g or -G is required", 'error');
-                program.outputHelp();
-                process.exit(-1);
-            }
-            program.code.forEach((arg) => {
-                var r = emojis.searchByCode(arg);
-                results = !results ? Enumerable.from(r) :
-                    results.intersect(r, "$.chars");
-            });
+        program.code.forEach((arg) => {
+            var r = emojis.searchByCode(arg);
+            results = !results ? Enumerable.from(r) :
+                results.intersect(r, "$.chars");
+        });
 
-            program.char.forEach((arg) => {
-                var r = emojis.searchByChars(arg);
-                results = !results ? Enumerable.from(r) :
-                    results.intersect(r, "$.chars");
-            });
+        program.char.forEach((arg) => {
+            var r = emojis.searchByChars(arg);
+            results = !results ? Enumerable.from(r) :
+                results.intersect(r, "$.chars");
+        });
 
-            program.name.forEach((arg) => {
-                var r = emojis.searchByName(arg);
-                results = !results ? Enumerable.from(r) :
-                    results.intersect(r, "$.chars");
-            });
+        program.name.forEach((arg) => {
+            var r = emojis.searchByName(arg);
+            results = !results ? Enumerable.from(r) :
+                results.intersect(r, "$.chars");
+        });
 
-            program.annotations.forEach((arg) => {
-                var argsAry = arg.split(/, */);
-                var r = emojis.searchByAnnotations.apply(emojis, argsAry);
-                results = !results ? Enumerable.from(r) :
-                    results.intersect(r, "$.chars");
-            });
+        program.annotations.forEach((arg) => {
+            var argsAry = arg.split(/, */);
+            var r = emojis.searchByAnnotations.apply(emojis, argsAry);
+            results = !results ? Enumerable.from(r) :
+                results.intersect(r, "$.chars");
+        });
 
-            program.gfm.forEach((arg) => {
-                var r = emojis.searchByShortcode(arg);
-                results = !results ? Enumerable.from(r) :
-                    results.intersect(r, "$.chars");
-            });
+        program.gfm.forEach((arg) => {
+            var r = emojis.searchByShortcode(arg);
+            results = !results ? Enumerable.from(r) :
+                results.intersect(r, "$.chars");
+        });
 
-            program.gfmStartswith.forEach((arg) => {
-                var r = emojis.searchByShortcodeStartsWith(arg);
-                results = !results ? Enumerable.from(r) :
-                    results.intersect(r, "$.chars");
-            });
-            ;
-            results = results.toArray();
-        }
+        program.gfmStartswith.forEach((arg) => {
+            var r = emojis.searchByShortcodeStartsWith(arg);
+            results = !results ? Enumerable.from(r) :
+                results.intersect(r, "$.chars");
+        });
+        ;
+        results = results.toArray();
+    }
 
-        if (program.format === "json") {
-            var json = JSON.stringify(
-                Enumerable.from(results)
-                    .select((e) => { return e.toData(); })
-                    .toArray()
-            );
-            console.log(json);
-        }
-        else {
+    if (program.format === "json") {
+        var json = JSON.stringify(
             Enumerable.from(results)
-                .select((e) => { return e.format(program.format); })
-                .forEach((e) => {
-                    console.log(e);
-                });
-        }
-    });
+                .select((e) => { return e.toData(); })
+                .toArray()
+        );
+        console.log(json);
+    }
+    else {
+        Enumerable.from(results)
+            .select((e) => { return e.format(program.format); })
+            .forEach((e) => {
+                console.log(e);
+            });
+    }
 }
