@@ -1,5 +1,6 @@
 //jshint esnext: true, node: true
 
+var path = require('path');
 var fs = require('fs');
 var assert = require('chai').assert
 var Emojis = require('../index.js').Emojis
@@ -216,6 +217,38 @@ describe("Emojis.searchByShortcodeStartsWith", () => {
     it("returns [] for `ro` (match by startsWith)", () => {
         assert.equal(emojis.searchByShortcodeStartsWith("ro").length, 0);
     });
+});
+
+describe("Emoji.createFromDefaultData", () => {
+    it("asynchronously reads emojiData from default location and returns new Emojis instance", function() {
+        return Emojis.createFromDefaultData()
+            .then((emojis) => {
+                return assert.equal(emojis.search("U+1F5FF")[0].chars, '🗿');
+            });
+    })
+});
+
+describe("Emoji.createFromDefaultDataSync", () => {
+    it("synchronously reads emojiData from default location and returns new Emojis instance", function() {
+        var emojis =  Emojis.createFromDefaultDataSync();
+        assert.equal(emojis.search("U+1F5FF")[0].chars, '🗿');
+    })
+});
+
+describe("Emoji.createFromFile", () => {
+    it("asynchronously reads emojiData from specified location and returns new Emojis instance", function() {
+        return Emojis.createFromFile(path.join(__dirname, '../', 'emojiData.json'))
+            .then((emojis) => {
+                return assert.equal(emojis.search("U+1F5FF")[0].chars, '🗿');
+            });
+    })
+});
+
+describe("Emoji.createFromFileSync", () => {
+    it("synchronously reads emojiData from specified location and returns new Emojis instance", function() {
+        var emojis =  Emojis.createFromFileSync(path.join(__dirname, '../', 'emojiData.json'));
+        assert.equal(emojis.search("U+1F5FF")[0].chars, '🗿');
+    })
 });
 
 describe("EmojiSearchResult", () => {
