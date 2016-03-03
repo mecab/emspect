@@ -12,6 +12,7 @@ var msg = require('emoji-logger');
 var emspect = require(path.join(__dirname, '../', 'index'));
 var Emojis = emspect.Emojis;
 
+require('epipebomb')(); // suppress `write EPIPE` error
 var query;
 
 function collect(val, memo) {
