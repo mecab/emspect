@@ -1,4 +1,4 @@
-📧Ⓜ️💲🅿️©️📍  - EMSPECT
+📧Ⓜ️💲🅿️📧©️📍  - EMSPECT
 ========================
 Emspect is a CLI utility to search emojis and inspect details of the character. It works on Node.js and can be also used as Node.js library so you can embed its features to your cool applications.
 
