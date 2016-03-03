@@ -60,6 +60,11 @@ describe("Emojis.searchFunctionForQuery", () => {
                      emojis.searchByChars);
     });
 
+    it("returns searchByName() for `G`", () => {
+        assert.equal(emojis.searchFunctionForQuery("G"),
+                     emojis.searchByName);
+    });
+
     it("returns searchByName() for `GRINNING FACE`", () => {
         assert.equal(emojis.searchFunctionForQuery("GRINNING FACE"),
                      emojis.searchByName);
