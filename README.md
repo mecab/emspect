@@ -65,3 +65,13 @@ $ less ./test/emojis.js
 ```
 
 I'm updating documents in hurry 💦
+
+Acknowledgement
+---------------
+Emspect employs unicode.org's [Full Emoji Data](http://unicode.org/emoji/charts/full-emoji-list.html) and github/gemoji's [emoji.json](https://github.com/github/gemoji/blob/master/db/emoji.json) to generate our [emojiData.json](https://github.com/mecab/emspect/blob/master/emojiData.json).
+
+License
+-------
+Copyright (c) 2016 mecab
+
+Emspect is released under the [MIT license](https://github.com/mecab/emspect/blob/master/LICENSE).
