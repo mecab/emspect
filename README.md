@@ -53,7 +53,7 @@ Requirements
 Installation
 -------------
 ```bash
-$ npm -g emspect
+$ npm install -g emspect
 ```
 
 Usage
