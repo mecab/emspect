@@ -59,6 +59,34 @@ $ npm install -g emspect
 Usage
 ------
 ```bash
+
+### Lazy Query™
+Basic usage is just one argument to emspect like:
+
+```bash
+$ emspect sleep
+$ emspect SLEEP
+$ emspect 😪
+$ emspect U+1F62A
+$ emspect :sleepy:
+```
+
+In this case emspect estimates context of the search and returns (hopefully) suitable result. To put it concretely, it goes with following rule.
+
+We have five searchable field for each emoji. Taking an example of 😪,
+
+- `code` -- `U+1F62A`
+- `chars` -- `😪`
+- `name` -- `SLEEPY FACE`
+- `annotations` -- `+1`, `body`, `hand`, `person`, `thumb`, `thumbs up`, `up`
+- `gfm` -- `+1`, `thumbsup`
+
+Then the field to match is depends on the query.
+
+- `emspect sleep` -- small characters matches to annotations.
+- `emspect SLEEP -- capital characters matches to name.
+
+
 $ emspect --help
 $
 $ less ./test/emojis.js
