@@ -14,7 +14,7 @@ features to your cool applications. "Emspect" stands for EMoji inSPECTor.
 Examples
 --------
 ```bash
-$ node ./bin/emspect sleep
+$ emspect sleep
 😪 SLEEPY FACE (U+1F62A) - face, person, sleep :sleepy:
 😴 SLEEPING FACE (U+1F634) - face, person, sleep, zzz :sleeping:
 💤 SLEEPING SYMBOL (U+1F4A4) - comic, emotion, person, sleep, symbol, word, zzz :zzz:
@@ -23,7 +23,7 @@ $ node ./bin/emspect sleep
 ```
 
 ```bash
-$ node ./bin/emspect sleep --format all # verbose
+$ emspect sleep --format all # verbose
 U+1F62A 😪       SLEEPY FACE     2010ʲ   emoji   face, person, sleep     :sleepy:
 U+1F634 😴       SLEEPING FACE   2012ˣ   emoji   face, person, sleep, zzz        :sleeping:
 U+1F4A4 💤       SLEEPING SYMBOL 2010ʲ   emoji   comic, emotion, person, sleep, symbol, word, zzz        :zzz:
@@ -32,17 +32,17 @@ U+1F6CF 🛏       BED     2014ʷ   text    bed, hotel, object, sleep
 ```
 
 ```bash
-$ node ./bin/emspect U+1F62A --format json # Can search from character code. Also output in JSON
+$ emspect U+1F62A --format json # Can search from character code. Also output in JSON
 [{"code":"U+1F62A","chars":"😪","name":"SLEEPY FACE","synonym":null,"age":"2010ʲ","default":"emoji","annotations":["face","person","sleep"],"aliases":["sleepy"]}]
 ```
 
 ```bash
-$ node ./bin/emspect "🈁" --format "%C %G" # tell me GFM emoji code!
+$ emspect "🈁" --format "%C %G" # tell me GFM emoji code!
 🈁 :koko:
 ```
 
 ```bash
-$ node ./bin/emspect -n WHITE -a symbol # name contains `WHITE` and has annotation `symbol`
+$ emspect -n WHITE -a symbol # name contains `WHITE` and has annotation `symbol`
 💮 WHITE FLOWER (U+1F4AE) - flower, object, symbol :white_flower:
 ✅ WHITE HEAVY CHECK MARK (U+2705) - check, mark, sign, symbol :white_check_mark:
 ❔ WHITE QUESTION MARK ORNAMENT (U+2754) - mark, outlined, punctuation, question, symbol, word :grey_question:
@@ -149,7 +149,7 @@ useful.
 `-f <format>` or `--format <format>` option customizes the outputs. `<format>`
 is string, can contain following descriptors.
 
-- `%c` -- Extracted to  `code`, e.g. `U+1F62A`
+- `%c` -- Extracted to `code`, e.g. `U+1F62A`
 - `%C` -- Extracted to `chars`, e.g. `😪`
 - `%n` -- Extracted to `name`, e.g. `SLEEPY FACE`
 - `%a` -- Extracted to `annotations`. Comma (with space) separated, e.g.
