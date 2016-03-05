@@ -22,7 +22,7 @@ function collect(val, memo) {
 }
 
 program
-    .version('1.0.0')
+    .version('1.0.4')
     .arguments('[query]')
     .action((query_) => {
         query = query_;
