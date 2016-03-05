@@ -194,6 +194,10 @@ then you can find `👫 `, i.e., `man AND woman` is duplicated. One more tip tha
 
 For more details, taking a look of `./test/emojis.js` will help your understand.
 
+More Examples
+-------------
+See [Wiki](https://github.com/mecab/emspect/wiki/Funny-Examples)!
+
 Acknowledgement
 ---------------
 Emspect employs unicode.org's [Full Emoji Data](http://unicode.org/emoji/charts/full-emoji-list.html) and github/gemoji's [emoji.json](https://github.com/github/gemoji/blob/master/db/emoji.json) to generate our [emojiData.json](https://github.com/mecab/emspect/blob/master/emojiData.json).
