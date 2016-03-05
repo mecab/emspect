@@ -1,7 +1,7 @@
 📧Ⓜ️💲🅿️📧©️📍  - EMSPECT
 ========================
 
-![Node Version](https://img.shields.io/node/v/emspect.svg)
+![Node Version](https://img.shields.io/node/v/emspect.svg?style=flat-square)
 [![NPM Version](https://img.shields.io/npm/v/emspect.svg?style=flat-square)](https://www.npmjs.org/package/emspect)
 [![Build Status](https://img.shields.io/travis/mecab/emspect.svg?style=flat-square)](https://travis-ci.org/mecab/emspect)
 [![Coverage Status](https://img.shields.io/coveralls/mecab/emspect.svg?style=flat-square)](https://coveralls.io/github/mecab/emspect)
