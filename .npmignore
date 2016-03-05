@@ -1,0 +1,14 @@
+node_modules/
+/coverage
+/test
+.git*
+npm-debug.log
+.*.yml
+
+### Mac crap ##
+.DS_Store
+
+### emacs ###
+*[~]
+\#*\#
+*_flymake.*
