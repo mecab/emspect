@@ -1,6 +1,7 @@
 📧Ⓜ️💲🅿️📧©️📍  - EMSPECT
 ========================
-Emspect is a CLI utility to search emojis and inspect details of the character. It works on Node.js and can be also used as Node.js library so you can embed its features to your cool applications.
+Emspect is a CLI utility to search emojis and inspect details of the character.
+It works on Node.js and can be also used as Node.js library so you can embed its features to your cool applications.
 
 Examples
 --------
@@ -58,8 +59,6 @@ $ npm install -g emspect
 
 Usage
 ------
-```bash
-
 ### Lazy Query™
 Basic usage is just one argument to emspect like:
 
@@ -70,8 +69,8 @@ $ emspect 😪
 $ emspect U+1F62A
 $ emspect :sleepy:
 ```
-
-In this case emspect estimates context of the search and returns (hopefully) suitable result. To put it concretely, it goes with following rule.
+In this case emspect estimates context of the search and returns (hopefully)
+suitable result. To put it concretely, it goes with following rule.
 
 We have five searchable field for each emoji. Taking an example of 😪,
 
@@ -83,10 +82,28 @@ We have five searchable field for each emoji. Taking an example of 😪,
 
 Then the field to match is depends on the query.
 
-- `emspect sleep` -- small characters matches to annotations.
-- `emspect SLEEP -- capital characters matches to name.
+- `emspect sleep` -- Small letters matches to `annotations`. It searches by
+  exact match. e.g., `sle` doesn't match to `sleep`.
 
+- `emspect SLEEP` -- capital letters matches to `name`. It searches by partial
+  match. e.g., `CAR` mathes to `CARD`. Note capitalization tells emspect to
+  search by `name`, however actual search is case-insensitive, so
+  `emspect KEYCAP` can return the the emojis such as 0️ ⃣  (`Keycap DIGIT ZERO`).
 
+- `emspect 😪` -- an emoji matches to the emoji directly.
+
+- `emspect U+1F62A` -- letters starting `U+` matches `code`. It searches by
+  partial match, e.g., `U+1F62` matches other faces near 😪, such as 😠 (`U+1F620`)
+  or 😡 (`U+1F621`). Also `U+1F3FF` matches emojis which have `TYPE-6`
+  (the darkest) skin color like 👍🏿  (`U+1F44D U+1F3FF`).
+
+- `emspect :sleepy:` -- letters surrounded by `:` matches `gfm`. It searchs by
+  exact match.
+
+- `emspect :sle` -- letters just starting with `:` also match `gfm` but conducts
+  prefix search.
+
+```bash
 $ emspect --help
 $
 $ less ./test/emojis.js
