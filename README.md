@@ -162,9 +162,29 @@ There are two special format options.
 - `--format json` -- Prints all data in JSON. Could be useful with
   [jq](https://stedolan.github.io/jq/). Also building your cool emoji web API.
 
+### OR Search
+
+Currently we doesn't provide or-search, but you can ealisly achieve it with
+sub-shell.
+
+```bash
+$ (emspect -a man -a person & emspect -a woman -a person) | sort | uniq
+```
+
+This shows the results like that `(man AND person) OR (woman AND person)`.
+Note we need `| sort | uniq` to remove dupulicates. Compare to
+
+```bash
+$ (emspect -a man -a person & emspect -a woman -a person)
+```
+
+then you can find `👫 `, i.e., `man AND woman` is duplicated. One more tip that
+`(emspect foo & emspect bar)` is faster than `(emspect foo && emspect bar)` or
+`(emspect foo; emspect bar)` because `&` executes commands in parallel.
+
 ---
 
-Taking look of `./test/emojis.js` will help your understand.
+For more details, taking look of `./test/emojis.js` will help your understand.
 
 Acknowledgement
 ---------------
