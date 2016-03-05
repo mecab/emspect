@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "istanbul": "^0.4.2",
     "mocha": "^2.4.5"
   },
   "engines": {
@@ -36,6 +37,8 @@
     "url": "https://github.com/mecab/emspect.git"
   },
   "scripts": {
-    "test": "mocha --recursive"
+    "coverage": "istanbul cover _mocha -- --recursive",
+    "test": "npm run coverage",
+    "unit-test": "mocha --recursive"
   }
 }
