@@ -1,5 +1,12 @@
 📧Ⓜ️💲🅿️📧©️📍  - EMSPECT
 ========================
+
+![Node Version](https://img.shields.io/node/v/emspect.svg)
+[![NPM Version](https://img.shields.io/npm/v/emspect.svg?style=flat-square)](https://www.npmjs.org/package/emspect)
+[![Build Status](https://img.shields.io/travis/mecab/emspect.svg?style=flat-square)](https://travis-ci.org/mecab/emspect)
+[![Coverage Status](https://img.shields.io/coveralls/mecab/emspect.svg?style=flat-square)](https://coveralls.io/github/mecab/emspect)
+[![Dependencies](https://img.shields.io/david/mecab/emspect.svg?style=flat-square)](https://david-dm.org/mecab/emspect)
+
 Emspect is a CLI utility to search emojis and inspect details of the character.
 It works on Node.js and can be also used as Node.js library so you can embed its features to your cool applications.
 
