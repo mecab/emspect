@@ -96,7 +96,7 @@ Then the field to match is depends on the query.
 - `emspect SLEEP` -- capital letters matches to `name`. It searches by partial
   match, e.g., `CAR` mathes to `CARD`. Note capitalization tells emspect to
   search by `name`, however actual search is case-insensitive, so
-  `emspect KEYCAP` can return the the emojis such as 0️⃣  (`Keycap DIGIT ZERO`).
+  `emspect FLAG` can return the emojis such as 🇯🇵 (`Flag for Japan`).
 
 - `emspect 😪` -- an emoji matches to the emoji directly.
 
