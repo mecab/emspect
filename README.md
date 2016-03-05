@@ -83,12 +83,12 @@ We have five searchable field for each emoji. Taking an example of 😪,
 Then the field to match is depends on the query.
 
 - `emspect sleep` -- Small letters matches to `annotations`. It searches by
-  exact match. e.g., `sle` doesn't match to `sleep`.
+  exact match, e.g., `sle` doesn't match to `sleep`.
 
 - `emspect SLEEP` -- capital letters matches to `name`. It searches by partial
-  match. e.g., `CAR` mathes to `CARD`. Note capitalization tells emspect to
+  match, e.g., `CAR` mathes to `CARD`. Note capitalization tells emspect to
   search by `name`, however actual search is case-insensitive, so
-  `emspect KEYCAP` can return the the emojis such as 0️ ⃣  (`Keycap DIGIT ZERO`).
+  `emspect KEYCAP` can return the the emojis such as 0️⃣  (`Keycap DIGIT ZERO`).
 
 - `emspect 😪` -- an emoji matches to the emoji directly.
 
@@ -103,13 +103,68 @@ Then the field to match is depends on the query.
 - `emspect :sle` -- letters just starting with `:` also match `gfm` but conducts
   prefix search.
 
+### Search Context Options
+
+'[Please don't say "You are lazy"](https://www.youtube.com/watch?v=lX-yENHkeMo)'? Emspect has following options which enables you to specify them.
+
+- `-a <query>` or `--anotations <query>`
+- `-n <query>` or `--name <query>`
+- `-c <query>` or `--code <query>`
+- `-C <query>` or `--char <query>`
+- `-g <query>` or `--gfm <query>` -- same as `emspect :<query>:`.
+  Colon can be appended.
+  i.e., `-g :+1:` and `-g +1` is same
+
+- `-G <query>` or `--gfm-startswith <query>` -- same as `emspect :<query>`
+
+When multiple options are given, emspect conducts and-search. The options can
+be used multiple times. Note you must double-quate when the query contains space.
+The complete example follows:
+
 ```bash
-$ emspect --help
-$
-$ less ./test/emojis.js
+$ emspect -n "WITH FACE" -a bright -a moon
+🌝 FULL MOON WITH FACE (U+1F31D) - bright, face, full, moon, nature, place, space, weather :full_moon_with_face:
 ```
 
-I'm updating documents in hurry 💦
+### All
+
+```bash
+$ emspect
+```
+
+Returns all emojis. Then you can pipe to `grep` or any commands so that you can
+cook them as you want🍳 . `--format all` options, described below, should be
+useful.
+
+### Formatting
+
+`-f <format>` or `--format <format>` option customizes the outputs. `<format>`
+is string, can contain following descriptors.
+
+- `%c` -- Extracted to  `code`, e.g. `U+1F62A`
+- `%C` -- Extracted to `chars`, e.g. `😪`
+- `%n` -- Extracted to `name`, e.g. `SLEEPY FACE`
+- `%a` -- Extracted to `annotations`. Comma (with space) separated, e.g.
+  `+1, body, hand, person, thumb, thumbs up, up`
+- `%g` -- Extracted to `gfm`. Comma (with space) separated, e.g. `+1, thumbsup`
+- `%G` -- Similar to `gfm`, but adds colons, e.g. `:+1:, :thumbsup:`
+- `%y` -- Extracted to `year`, e.g. `2010ʲʷ`
+- `%d` -- Extracted to `default presentation style`, e.g. `emoji`
+
+For details of `year` and `default presentation style`, see
+http://unicode.org/emoji/charts/index.html#emoji-data-chart-key .
+
+There are two special format options.
+
+- `--format all` -- Prints all data in tab-separated. Could be useful with
+  pipes. It is same to `--format "%c\t%C\t%n\t%y\t%d\t%a\t%G"`
+
+- `--format json` -- Prints all data in JSON. Could be useful with
+  [jq](https://stedolan.github.io/jq/). Also building your cool emoji web API.
+
+---
+
+Taking look of `./test/emojis.js` will help your understand.
 
 Acknowledgement
 ---------------
