@@ -8,7 +8,8 @@
 [![Dependencies](https://img.shields.io/david/mecab/emspect.svg?style=flat-square)](https://david-dm.org/mecab/emspect)
 
 Emspect is a CLI utility to search emojis and inspect details of the character.
-It works on Node.js and can be also used as Node.js library so you can embed its features to your cool applications.
+It works on Node.js and can be also used as Node.js library so you can embed its
+features to your cool applications. "Emspect" stands for EMoji inSPECTor.
 
 Examples
 --------
@@ -191,7 +192,7 @@ then you can find `👫 `, i.e., `man AND woman` is duplicated. One more tip tha
 
 ---
 
-For more details, taking look of `./test/emojis.js` will help your understand.
+For more details, taking a look of `./test/emojis.js` will help your understand.
 
 Acknowledgement
 ---------------
