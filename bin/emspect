@@ -14,6 +14,7 @@ var Emojis = emspect.Emojis;
 
 require('epipebomb')(); // suppress `write EPIPE` error
 var query;
+var noLongHelp = false;
 
 function collect(val, memo) {
     memo.push(val);
@@ -38,8 +39,49 @@ program
             'search by GitHub Flavored Markdown (GFM) style emoji code (ex. :+1: or +1)', collect, [])
     .option('-G, --gfm-startswith <gfm-startswith>',
             'like gfm, but conduct forward match', collect, [])
-    .option('-f, --format <format>', 'format', String)
+    .option('-f, --format <format>', 'Specify output format. Available specifiers: %c, %C, %n, %y, %d, %a, %g, %G. The details are is shown by `emspect --help`', String)
     .option('--update', '⚠️ update emoji database (requires internet connection) ⚠️')
+    .on('--help', () => {
+        if (noLongHelp) {
+            return;
+        }
+        console.log("  Format Specifiers:");
+        console.log("");
+        console.log("    %c\t\tExtracted to `code`, e.g. `U+1F62A`");
+        console.log("    %C\t\tExtracted to `chars`, e.g. `😪`");
+        console.log("    %n\t\tExtracted to `name`, e.g. `SLEEPY FACE`");
+        console.log("    %a\t\tExtracted to `annotations`, Comma (with space) separated, e.g. `+1, body, hand, person, thumb, thumbs up, up`");
+        console.log("    %g\t\tExtracted to `gfm`, Comma (with space) separated, e.g. `+1, thumbsup`");
+        console.log("    %G\t\tSimilar to `gfm`, but adds colons, e.g. `:+1:, :thumbsup:``");
+        console.log("    %y\t\tExtracted to `year`, `2010ʲʷ`");
+        console.log("    %d\t\tExtracted to `default presentation style`, `emoji`");
+        console.log();
+        console.log("    Special Format Type:");
+        console.log("");
+        console.log("    -f json\tOutput as JSON");
+        console.log("    -f all\tPrint all data with tab-saparated. Same to -f %c\\t%C\\t%n\\t%y\\t%d\\t%a\\t%G");
+        console.log("");
+        console.log("  Examples:");
+        console.log("");
+        console.log("    emspect");
+        console.log("    => Show all emojis");
+        console.log("");
+        console.log("    emspect sleep");
+        console.log("    => Show emojis with `sleep` in annotations");
+        console.log("");
+        console.log("    emspect U+1F62A --format json");
+        console.log("    => Show emojis with code `U+1F62A`. Output as JSON");
+        console.log("");
+        console.log('    emspect "🈁" --format "%C %G"');
+        console.log("    => Show GFM style emoji code of `🈁`");
+        console.log("");
+        console.log("    emspect -n WHITE -a symbol");
+        console.log("    => Show emojis contains `WHITE` in name and have `symbol` in annotations");
+        console.log("");
+        console.log("    (emspect -a man -a person & emspect -a woman -a person) | sort | uniq");
+        console.log("    => Or-search example with sub-shell. Show emojis which has `(man AND person) OR (woman AND person)` for annotaions");
+        console.log("");
+    })
     .parse(process.argv);
 
 // COMMANDER HACK
@@ -98,7 +140,9 @@ function print(results) {
     var results;
 
     if (query && isAnyNamedQuery()) {
+        console.log();
         msg("`query` cannot specified if -c, -C, -n, -a, -g or -G is given", 'error');
+        noLongHelp = true;
         program.outputHelp();
         process.exit(-1);
     }
