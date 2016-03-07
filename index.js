@@ -103,18 +103,22 @@ function update() {
     return Promise.all([requestFullEmojiListPromise,
                         requestGemojiJsonPromise])
         .then((full_gemojiData) => {
-            var full = full_gemojiData[0];
-            var gemojiData = full_gemojiData[1];
+            return new Promise((resolve, reject) => {
+                var full = full_gemojiData[0];
+                var gemojiData = full_gemojiData[1];
 
-            var emojis = parseFullEmojiBody(full);
-            var data = _joinEmojitoGemoji(emojis, gemojiData);
+                var emojis = parseFullEmojiBody(full);
+                var data = _joinEmojitoGemoji(emojis, gemojiData);
 
-            msg("Writing emojiData.json...");
+                msg("Writing emojiData.json...");
 
-            fs.writeFile(path.join(__dirname, 'emojiData.json'), JSON.stringify(data), 'utf-8', (err, res) => {
-                if (err) return Promise.reject(err);
-                return Promise.resolve(data);
-            });
+                fs.writeFile(path.join(__dirname, 'emojiData.json'), JSON.stringify(data), 'utf-8', (err, res) => {
+                    if (err) {
+                        return Promise.reject(err);
+                    }
+                    resolve(data);
+                });
+            })
         })
         .then(
             () => {

@@ -1,0 +1,24 @@
+[
+    {
+        "emoji": "😄",
+        "description": "smiling face with open mouth and smiling eyes",
+        "aliases": [
+            "smile"
+        ],
+        "tags": [
+            "happy",
+            "joy",
+            "pleased"
+        ]
+    },
+    {
+        "emoji": "😃",
+        "description": "smiling face with open mouth",
+        "aliases": [
+            "smiley"
+        ],
+        "tags": [
+            "happy", "joy", "haha"
+        ]
+    }
+]
