@@ -268,58 +268,109 @@ describe("Emoji.createFromFileSync", () => {
 });
 
 describe("EmojiSearchResult", () => {
-    var e = new EmojiSearchResult({
-        code: "U+0030 U+20E3",
-        chars: "0️⃣",
-        name: "Keycap DIGIT ZERO",
-        age: "2000",
-        default: "text*",
-        annotations: ["0", "keycap", "symbol", "word", "zero"],
-        // ⚠️ Friendly note: "null" is not actual data for this emoji.
-        // Just for test of the aliases where length > 1. 😛
-        aliases: [ "zero", "null" ]
-    });
-
-    it("formatSimple() returns `0️⃣ Keycap DIGIT ZERO (U+0030 U+20E3) - 0, keycap, symbol, word, zero :zero:, :null:`", () => {
-        assert.equal(e.formatSimple(), "0️⃣ Keycap DIGIT ZERO (U+0030 U+20E3) - 0, keycap, symbol, word, zero :zero:, :null:");
-    });
-    
-    it("format() is same as formatSimple()", () => {
-        assert.equal(e.format(), e.formatSimple());
-    });
-
-    it("formatAll() returns `U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\t:zero:, :null:`", () => {
-        assert.equal(e.formatAll(), "U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\t:zero:, :null:");
-    });
-
-    it("format('all') is same as formatAll()", () => {
-        assert.equal(e.format('all'), e.formatAll());
-    });
-
-    it("format('%c\t%C\t%n\t%y\t%d\t%a\t%g\t%G') returns `U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\tzero, null\t:zero:, :null:`", () => {
-        assert.equal(e.format('%c\t%C\t%n\t%y\t%d\t%a\t%g\t%G'),
-                     "U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\t2000\ttext*\t0, keycap, symbol, word, zero\tzero, null\t:zero:, :null:");
-    });
-
-    it("format() works for duplicated format-descriptors; format('%c %c')", () => {
-        assert.equal(e.format('%c %c'),
-                     "U+0030 U+20E3 U+0030 U+20E3");
-    });
-
-    it("format() works for escaped doller; format('%c\%%c')", () => {
-        assert.equal(e.format('%c\%%c'),
-                     "U+0030 U+20E3%U+0030 U+20E3");
-    });
-
-    it("formatJson returns correct JSON", () => {
-        assert.deepEqual(JSON.parse(e.formatJson()), {
+    describe ("for 0️⃣", () => {
+        var e = new EmojiSearchResult({
             code: "U+0030 U+20E3",
             chars: "0️⃣",
             name: "Keycap DIGIT ZERO",
+            // ⚠️ Friendly note: "null" is not actual data for this emoji.
+            // Just for test of the aliases where synonym != null. 😛
+            synonym: "keycap zero",
             age: "2000",
             default: "text*",
             annotations: ["0", "keycap", "symbol", "word", "zero"],
-            aliases: ["zero", "null"]
+            // ⚠️  Just for test of the aliases where length > 1.
+            aliases: [ "zero", "null" ]
         });
-    })
+
+        it("formatSimple() returns `0️⃣ Keycap DIGIT ZERO ≊ keycap zero (U+0030 U+20E3) - 0, keycap, symbol, word, zero :zero:, :null:`", () => {
+            assert.equal(e.formatSimple(), "0️⃣ Keycap DIGIT ZERO ≊ keycap zero (U+0030 U+20E3) - 0, keycap, symbol, word, zero :zero:, :null:");
+        });
+
+        it("format() is same as formatSimple()", () => {
+            assert.equal(e.format(), e.formatSimple());
+        });
+
+        it("formatAll() returns `U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\tkeycap zero\t2000\ttext*\t0, keycap, symbol, word, zero\t:zero:, :null:`", () => {
+            assert.equal(e.formatAll(), "U+0030 U+20E3\t0️⃣\tKeycap DIGIT ZERO\tkeycap zero\t2000\ttext*\t0, keycap, symbol, word, zero\t:zero:, :null:");
+        });
+
+        it("format('all') is same as formatAll()", () => {
+            assert.equal(e.format('all'), e.formatAll());
+        });
+
+        it("format() works for duplicated format-descriptors; format('%c %c')", () => {
+            assert.equal(e.format('%c %c'),
+                         "U+0030 U+20E3 U+0030 U+20E3");
+        });
+
+        it("format() works for escaped doller; format('%c\%%c')", () => {
+            assert.equal(e.format('%c\%%c'),
+                         "U+0030 U+20E3%U+0030 U+20E3");
+        });
+
+        it("formatJson returns correct JSON", () => {
+            assert.deepEqual(JSON.parse(e.formatJson()), {
+                code: "U+0030 U+20E3",
+                chars: "0️⃣",
+                name: "Keycap DIGIT ZERO",
+                synonym: "keycap zero",
+                age: "2000",
+                default: "text*",
+                annotations: ["0", "keycap", "symbol", "word", "zero"],
+                aliases: ["zero", "null"]
+            });
+        })
+
+        it("all format specifiers replaced properly", () => {
+            assert.equal(e.format("%c"), "U+0030 U+20E3");
+            assert.equal(e.format("%C"), "0️⃣");
+            assert.equal(e.format("%n"), "Keycap DIGIT ZERO");
+            assert.equal(e.format("%s"), "keycap zero");
+            assert.equal(e.format("%?s(abc)"), "abc");
+            assert.equal(e.format("%S"), "≊ keycap zero");
+            assert.equal(e.format("%y"), "2000");
+            assert.equal(e.format("%d"), "text*");
+            assert.equal(e.format("%a"), "0, keycap, symbol, word, zero");
+            assert.equal(e.format("%g"), "zero, null");
+            assert.equal(e.format("%?g(abc)"), "abc");
+            assert.equal(e.format("%G"), ":zero:, :null:");
+        });
+    });
+
+    describe("for ⛑", () => {
+        var e = new EmojiSearchResult({
+            code: "U+26D1",
+            chars: "⛑",
+            name: "HELMET WITH WHITE CROSS",
+            synonym: null,
+            age: "2009ª",
+            default: "text",
+            annotations: ["aid", "cross", "face", "hat", "helmet", "person"],
+            aliases: []
+        });
+
+        it("formatSimple() returns `⛑ HELMET WITH WHITE CROSS (U+26D1) - aid, cross, face, hat, helmet, person`", () => {
+            assert.equal(e.formatSimple(), "⛑ HELMET WITH WHITE CROSS (U+26D1) - aid, cross, face, hat, helmet, person");
+        });
+
+        it("formatAll() returns `U26D1\t⛑\tHELMET WITH WHITE CROSS\t\t2009ª\ttext\taid, cross, face, hat, helmet, person\t`", () => {
+            assert.equal(e.formatAll(), "U+26D1\t⛑\tHELMET WITH WHITE CROSS\t\t2009ª\ttext\taid, cross, face, hat, helmet, person\t");
+        });
+
+        it("all format specifiers replaced properly", () => {
+            assert.equal(e.format("%c"), "U+26D1");
+            assert.equal(e.format("%C"), "⛑");
+            assert.equal(e.format("%n"), "HELMET WITH WHITE CROSS");
+            assert.equal(e.format("%s"), "");
+            assert.equal(e.format("%?s(abc)"), "");
+            assert.equal(e.format("%S"), "");
+            assert.equal(e.format("%y"), "2009ª");
+            assert.equal(e.format("%d"), "text");
+            assert.equal(e.format("%a"), "aid, cross, face, hat, helmet, person");
+            assert.equal(e.format("%g"), "");
+            assert.equal(e.format("%?g(abc)"), "");
+            assert.equal(e.format("%G"), "");
+        });
+    });
 });
