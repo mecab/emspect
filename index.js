@@ -92,7 +92,7 @@ function update() {
                         age: $el.find('.age').text(),
                         default: $el.find('.default').text(),
                         annotations: annotations
-                    }
+                    };
                 })
                 .toArray();
 
@@ -114,11 +114,11 @@ function update() {
 
                 fs.writeFile(path.join(__dirname, 'emojiData.json'), JSON.stringify(data), 'utf-8', (err, res) => {
                     if (err) {
-                        return Promise.reject(err);
+                        reject(err);
                     }
                     resolve(data);
                 });
-            })
+            });
         })
         .then(
             () => {
