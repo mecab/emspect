@@ -80,36 +80,42 @@ $ emspect :sleepy:
 In this case emspect estimates context of the search and returns (hopefully)
 suitable result. To put it concretely, it goes with following rule.
 
-We have five searchable field for each emoji. Taking an example of 😪,
+We have five searchable field for each emoji. Taking an example of 💤
 
-- `code` -- `U+1F62A`
-- `chars` -- `😪`
-- `name` -- `SLEEPY FACE`
-- `annotations` -- `+1`, `body`, `hand`, `person`, `thumb`, `thumbs up`, `up`
-- `gfm` -- `+1`, `thumbsup`
+- `code` -- `U+1F4A4`
+- `chars` -- `💤`
+- `name` -- `SLEEPING SYMBOL`
+- `synonym` -- `zzz`
+- `annotations` -- `comic`, `emotion`, `person`, `sleep`, `symbol`, `word`, `zzz`
+- `gfm` -- `zzz`
+
+`gfm` corresponds to the emoji shortcode used widely including GitHub, Slack, etc. See [Emoji Full List](http://unicode.org/emoji/charts/full-emoji-list.html) for the others. `name` has only the words before `≊`. `synonym` has the after than `≊`
 
 Then the field to match is depends on the query.
 
 - `emspect sleep` -- Small letters matches to `annotations`. It searches by
   exact match, e.g., `sle` doesn't match to `sleep`.
 
-- `emspect SLEEP` -- capital letters matches to `name`. It searches by partial
-  match, e.g., `CAR` mathes to `CARD`. Note capitalization tells emspect to
-  search by `name`, however actual search is case-insensitive, so
+- `emspect SLEEP` -- capital letters matches to `name` or `synonym`. It searches
+  by partial match, e.g., `CAR` matches to `CARD`. Note capitalization tells
+  emspect to search by `name`, however actual search is case-insensitive, so
   `emspect FLAG` can return the emojis such as 🇯🇵 (`Flag for Japan`).
 
-- `emspect 😪` -- an emoji matches to the emoji directly.
+- `emspect 💤` -- an emoji matches to the emoji directly.
 
-- `emspect U+1F62A` -- letters starting `U+` matches `code`. It searches by
+- `emspect U+1F4A4` -- letters starting `U+` matches `code`. It searches by
   partial match, e.g., `U+1F62` matches other faces near 😪, such as 😠 (`U+1F620`)
   or 😡 (`U+1F621`). Also `U+1F3FF` matches emojis which have `TYPE-6`
   (the darkest) skin color like 👍🏿  (`U+1F44D U+1F3FF`).
 
-- `emspect :sleepy:` -- letters surrounded by `:` matches `gfm`. It searchs by
+- `emspect :sleep:` -- letters surrounded by `:` matches `gfm`. It searchs by
   exact match.
 
 - `emspect :sle` -- letters just starting with `:` also match `gfm` but conducts
   prefix search.
+
+Note the spaces in the query should be quoted, and they are treated "as is",
+i.e., emspect do not run AND or OR search.
 
 ### Search Context Options
 
@@ -126,7 +132,7 @@ Then the field to match is depends on the query.
 - `-G <query>` or `--gfm-startswith <query>` -- same as `emspect :<query>`
 
 When multiple options are given, emspect conducts and-search. The options can
-be used multiple times. Note you must double-quate when the query contains space.
+be used multiple times. Note again you must quate when the query contains space.
 The complete example follows:
 
 ```bash
