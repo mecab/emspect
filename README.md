@@ -164,6 +164,8 @@ is string, can contain following descriptors.
 - `%G` -- Similar to `gfm`, but adds colons, e.g. `:+1:, :thumbsup:`
 - `%y` -- Extracted to `year`, e.g. `2010ʲʷ`
 - `%d` -- Extracted to `default presentation style`, e.g. `emoji`
+- `%?s(<foo>)` -- Extracted to `<foo>` if has `synonym`. Othewise print nothing.
+- `%?g(<foo>)` -- Extracted to `<foo>` if has `gfm`. Othewise print nothing.
 
 For details of `year` and `default presentation style`, see
 http://unicode.org/emoji/charts/index.html#emoji-data-chart-key .
@@ -171,7 +173,7 @@ http://unicode.org/emoji/charts/index.html#emoji-data-chart-key .
 There are two special format options.
 
 - `--format all` -- Prints all data in tab-separated. Could be useful with
-  pipes. It is same to `--format "%c\t%C\t%n\t%y\t%d\t%a\t%G"`
+  pipes. It is same to `--format "%c\t%C\t%n\t%s\t%y\t%d\t%a\t%G"`
 
 - `--format json` -- Prints all data in JSON. Could be useful with
   [jq](https://stedolan.github.io/jq/). Also building your cool emoji web API.
