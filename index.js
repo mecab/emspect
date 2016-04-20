@@ -84,7 +84,7 @@ function update() {
                     var name = nameSynonym[0];
                     var synonym = nameSynonym[1] || null;
 
-                    return {
+                    var res  = {
                         code: $el.find('.code').text(),
                         chars: $el.find('.chars').text(),
                         name: name,
@@ -93,8 +93,18 @@ function update() {
                         default: $el.find('.default').text(),
                         annotations: annotations
                     };
+
+                    if (!res.code || !res.chars || !res.name || !res.age || !res.default) {
+                        throw new Error("Failed to parse. The format of full-emoji-list.html might have been changed. Failed object: " + JSON.stringify(res));
+                    }
+
+                    return res;
                 })
                 .toArray();
+
+        if (emojis.length === 0) {
+            throw new Error("Failed to parse. No emoji is parsed. The format of full-emoji-list.html might have been changed.");
+        }
 
         msg(`Parsed full-emoji-list.html. ${emojis.length} emoji found`);
         return emojis;
