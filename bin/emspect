@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-//jshint esnext: true, node: true
 
-"use strict"
+"use strict";
 
 var path = require('path');
-var fs = require('fs');
 var program = require('commander');
 var Enumerable = require('linq');
 var msg = require('emoji-logger');
@@ -94,7 +92,7 @@ program
 // Note `rawArgs[0]` is Node path. `rawArgs[1]` is the path of this script.
 if (program.name[0] && program.name[0].length === 0 && program.rawArgs.indexOf('name') > 1) {
     query = 'name';
-    program.name = []
+    program.name = [];
 }
 
 function isAnyNamedQuery() {
@@ -120,6 +118,7 @@ function print(results) {
 }
 
 (function () {
+    var emojis;
     if (program.update) {
         emspect.update()
             .catch(() => {
@@ -129,7 +128,7 @@ function print(results) {
     }
 
     try {
-        var emojis = Emojis.createFromDefaultDataSync();
+        emojis = Emojis.createFromDefaultDataSync();
     }
     catch (ex){
         msg('Could not read data.', 'error');

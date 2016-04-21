@@ -1,5 +1,3 @@
-//eshint: esnext: true, node: true;
-
 "use strict";
 
 var fs = require('fs');
@@ -117,15 +115,16 @@ function update() {
     return Promise.all([requestFullEmojiListPromise,
                         requestGemojiJsonPromise])
         .then((full_gemojiData) => {
+            var data;
             return new Promise((resolve, reject) => {
                 try {
                     var full = full_gemojiData[0];
                     var gemojiData = full_gemojiData[1];
 
                     var emojis = parseFullEmojiBody(full);
-                    var data = _joinEmojitoGemoji(emojis, gemojiData);
+                    data = _joinEmojitoGemoji(emojis, gemojiData);
                 }
-                catch(err) {
+                catch (err) {
                     reject(err);
                     return;
                 }
@@ -155,4 +154,4 @@ module.exports = {
     EmojiSearchResult: require('./lib/EmojiSearchResult'),
     update: update,
     _joinEmojitoGemoji: _joinEmojitoGemoji
-}
+};
