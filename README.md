@@ -158,6 +158,7 @@ is string, can contain following descriptors.
 - `%c` -- Extracted to `code`, e.g. `U+1F62A`
 - `%C` -- Extracted to `chars`, e.g. `😪`
 - `%n` -- Extracted to `name`, e.g. `SLEEPY FACE`
+- `%s` -- Extracted to `synonym`, e.g. `zzz` for `💤 SLEEPING SYMBOL`
 - `%a` -- Extracted to `annotations`. Comma (with space) separated, e.g.
   `+1, body, hand, person, thumb, thumbs up, up`
 - `%g` -- Extracted to `gfm`. Comma (with space) separated, e.g. `+1, thumbsup`
