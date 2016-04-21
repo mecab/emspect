@@ -7,12 +7,15 @@ opt[baseDir] = {}
 var mockFs = (require('mock-fs')).fs(opt);
 
 var Enumerable = require('linq');
-var assert = require('chai').assert;
+var chai = require('chai');
+chai.use(require('chai-string'));
+var assert = chai.assert;
 var proxyquire = require('proxyquire');
+var requestMock = require('./mock/request');
 var emspect = proxyquire(
     '../index.js',
     {
-        request: require('./mock/request'),
+        request: requestMock.request,
         fs: mockFs
     });
 
@@ -133,16 +136,69 @@ describe("_joinEmojitoGemoji", function() {
 });
 
 describe("update()", function() {
+    var checkNoOutput = function() {
+        try {
+            mockFs.statSync(emojiJsonPath);
+            assert.fail();
+        }
+        catch(err) {
+            assert.equal(err.code, "ENOENT");
+        }
+    };
+    var emojiJsonPath = path.join(__dirname, '../', 'emojiData.json');
+
+    afterEach(function() {
+        try {
+            mockFs.unlinkSync(emojiJsonPath);
+        }
+        catch(err) {
+            if (err.code !== "ENOENT") {
+                throw err;
+            }
+        }
+    });
+
     it("download `full-emoji-list.html` and `emoji.json` then create `emojiData.json`", function() {
         return emspect.update()
             .then(() => {
                 var written = mockFs.readFileSync(
-                    path.join(__dirname, '../', 'emojiData.json'),
+                    emojiJsonPath,
                     'utf-8'
                 );
 
                 written = JSON.parse(written);
                 assert.deepEqual(written, expectJoined);
             });
+    });
+
+    it("throws error when no data in `full-emoji-list.html`", function() {
+        requestMock.setFullEmojiListFilename('full-emoji-list-no-data.html');
+        return emspect.update()
+            .then(assert.fail)
+            .catch((err) => {
+                assert.equal(err.message, "Failed to parse. No data is found in full-emoji-list.html. The format might have been changed.");
+            })
+            .then(checkNoOutput);
+    });
+
+    it("throws error when found a field which is required but actually missing in an emoji data in `full-emoji-list.html`", function() {
+        requestMock.setFullEmojiListFilename('full-emoji-list-with-missing-field.html');
+        return emspect.update()
+            .then(assert.fail)
+            .catch((err) => {
+                assert.startsWith(err.message, "Failed to parse. The format of full-emoji-list.html might have been changed. Failed object:");
+            })
+            .then(checkNoOutput);
+    });
+
+    it("throws error when no data in `emoji.json`", function() {
+        requestMock.setFullEmojiListFilename('full-emoji-list.html');
+        requestMock.setEmojiJsonFilename('emoji-empty.json');
+        return emspect.update()
+            .then(assert.fail)
+            .catch((err) => {
+                assert.equal(err.message, "Failed to parse. No data is found in emoji.json. The format might have been changed.");
+            })
+            .then(checkNoOutput);
     });
 });

@@ -61,7 +61,11 @@ function update() {
 
             var emojis = JSON.parse(body);
 
-            msg(`Parsed emoji.json. ${emojis.length} emoji found.`);
+            if (emojis.length === 0) {
+                throw new Error("Failed to parse. No data is found in emoji.json. The format might have been changed.");
+            }
+
+            msg(`Parsed emoji.json. ${emojis.length} emojis found.`);
             resolve(emojis);
         });
     });
@@ -84,7 +88,7 @@ function update() {
                     var name = nameSynonym[0];
                     var synonym = nameSynonym[1] || null;
 
-                    return {
+                    var res  = {
                         code: $el.find('.code').text(),
                         chars: $el.find('.chars').text(),
                         name: name,
@@ -93,10 +97,20 @@ function update() {
                         default: $el.find('.default').text(),
                         annotations: annotations
                     };
+
+                    if (!res.code || !res.chars || !res.name || !res.age || !res.default) {
+                        throw new Error("Failed to parse. The format of full-emoji-list.html might have been changed. Failed object: " + JSON.stringify(res));
+                    }
+
+                    return res;
                 })
                 .toArray();
 
-        msg(`Parsed full-emoji-list.html. ${emojis.length} emoji found`);
+        if (emojis.length === 0) {
+            throw new Error("Failed to parse. No data is found in full-emoji-list.html. The format might have been changed.");
+        }
+
+        msg(`Parsed full-emoji-list.html. ${emojis.length} emojis found`);
         return emojis;
     }
 
@@ -104,11 +118,17 @@ function update() {
                         requestGemojiJsonPromise])
         .then((full_gemojiData) => {
             return new Promise((resolve, reject) => {
-                var full = full_gemojiData[0];
-                var gemojiData = full_gemojiData[1];
+                try {
+                    var full = full_gemojiData[0];
+                    var gemojiData = full_gemojiData[1];
 
-                var emojis = parseFullEmojiBody(full);
-                var data = _joinEmojitoGemoji(emojis, gemojiData);
+                    var emojis = parseFullEmojiBody(full);
+                    var data = _joinEmojitoGemoji(emojis, gemojiData);
+                }
+                catch(err) {
+                    reject(err);
+                    return;
+                }
 
                 msg("Writing emojiData.json...");
 
@@ -120,14 +140,14 @@ function update() {
                 });
             });
         })
-        .then(
-            () => {
-                msg("Done!", "success");
-            },
-            (err) => {
-                msg("Failed...", "error");
-                console.log(err);
-            });
+        .then(() => {
+            msg("Done!", "success");
+        })
+        .catch((err) => {
+            msg("Failed...", "error");
+            msg(err.message, "error");
+            throw err;
+        });
 }
 
 module.exports = {
